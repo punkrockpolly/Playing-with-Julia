@@ -1,0 +1,1 @@
+Working through Project Euler Problems (http://projecteuler.net), using Julia and IPython notebook for IJulia
