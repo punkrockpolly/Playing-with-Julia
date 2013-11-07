@@ -1,8 +1,9 @@
-# typealias 
+typealias RangeIndex Union(Int, Range{Int}, Range1{Int}, Array{Int})
 
 
-type NegatedIndex{T}
-    idx::T
+type NegatedIndex{T,N,A,I<:(RangeIndex...,)}
+	parent::A
+    idx::I
 end
 
 # type SubArray{T,N,A<:AbstractArray,I<:(RangeIndex...,)} <: AbstractArray{T,N}
@@ -12,30 +13,18 @@ end
 #     strides::Array{Int,1}  # for accessing parent with linear indexes
 #     first_index::Int
 
+# Type union of all valid types for the negated index input
+#AllowedTypes = Union(Integer, Range{Integer}, Range1{Integer}, Vector{Int64}, Array{Int64}, Matrix{Int64})
 
-function negated_index(a::Vector, i::Integer)
-	n = length(a)
-	if !(1 <= i <= n)
+function negated_index(A::Array, i::RangeIndex)
+	n = length(A)
+	if !(1 <= minimum(i) && maximum(i) <= n)
         throw(BoundsError())
     end
-    b = deepcopy(a)
+    b = deepcopy(A)
+    c = 0
     for k=1:n
         if k in i
-            splice!(b, k)
-        end
-    end
-    return b
-end
-
-function negated_index{T<:Integer}(a::Vector, r::Range1{T})
-	n = length(a)
-	if !(1 <= minimum(r) && maximum(r) <= n)
-        throw(BoundsError())
-    end
-    b = deepcopy(a)
-    c = 0
-    for k=1:n
-        if k in r
             splice!(b, k-c)
         	c += 1
         end
@@ -43,18 +32,6 @@ function negated_index{T<:Integer}(a::Vector, r::Range1{T})
     return b
 end
 
-function negated_index{T<:Integer}(a::Vector, v::Vector{T})
-	n = length(a)
-	if !(1 <= minimum(v) && maximum(v) <= n)
-        throw(BoundsError())
-    end
-    b = deepcopy(a)
-    c = 0
-    for k=1:n
-        if k in v
-            splice!(b, k-c)
-        	c += 1
-        end
-    end
-    return b
+function getnegatedindex()
+
 end
