@@ -1,13 +1,12 @@
 typealias RangeIndices Union(Int, Range{Int}, Range1{Int}, Array{Int})
 
 
-type NegatedIndex{T<:RangeIndices} <: RangeIndices
+type NegatedIndex{T<:RangeIndices}
     idx::T
 end
 
 
-function getindex(A::Array, i::NegatedIndex)
-	i = RangeIndices(i)
+function getindex(A::Array, idx::NegatedIndex)
 	n = length(A)
 	if !(1 <= minimum(i) && maximum(i) <= n)
         throw(BoundsError())
@@ -23,8 +22,9 @@ function getindex(A::Array, i::NegatedIndex)
     return b
 end
 
-copy(idx::RangeIndices) = idx
+getindex(A::Array, idx::NegatedIndex) = getindex(A,idx)
 
-getindex(A::Array, i::NegatedIndex) = getindex(A,i)
-
-!(A::Array,x::RangeIndices) = getindex(A, NegatedIndex(x))
+!(x::Int) = NegatedIndex(x)
+!(x::Range{Int}) = NegatedIndex(x)
+!(x::Range1{Int}) = NegatedIndex(x)
+!(x::Array{Int}) = NegatedIndex(x)
