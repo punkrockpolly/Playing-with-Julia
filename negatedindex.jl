@@ -8,13 +8,13 @@ end
 
 function getindex(A::Array, idx::NegatedIndex)
 	n = length(A)
-	if !(1 <= minimum(i) && maximum(i) <= n)
+	if !(1 <= minimum(idx) && maximum(idx) <= n)
         throw(BoundsError())
     end
     b = deepcopy(A)
     c = 0
     for k=1:n
-        if k in i
+        if k in idx
             splice!(b, k-c)
         	c += 1
         end
