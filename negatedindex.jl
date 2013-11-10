@@ -6,8 +6,9 @@ type NegatedIndex{T<:RangeIndices}
     step::Int
 end
 
+# Works unless A has multiple dimentions, because splice only works for Array{Int64,1} 
 function getindex(A::Array, r::NegatedIndex)
-    n = Base.length(A)
+    n = length(A)
     if !(1 <= minimum(r.idx) && maximum(r.idx) <= n)
         throw(BoundsError())
     end
