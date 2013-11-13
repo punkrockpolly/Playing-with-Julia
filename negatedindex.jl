@@ -53,10 +53,10 @@ function getindex(A::Array, r::NegatedIndex)
     m = length(r)
     checkbounds(n, r)
     b = similar(A, n-m)
-    c = 0
+    c = 1
     for k=1:n
         if !(k in r)
-            b[k-c] = A[k]
+            b[c] = A[k]
             c += 1
         end
     end
@@ -91,8 +91,7 @@ function in{T<:Integer}(x, r::NegatedIndex{Range{T}})
 end
 
 function in(x, r::NegatedIndex)
-    n = r.step == 0 ? 1 : iround((x-first(r))/r.step)+1
-    n >= 1 && n <= length(r) && r[n] == x
+    x >= first(r) && last(r) >= x
 end
 
 #function in(x, r::NegatedIndex{Range})
