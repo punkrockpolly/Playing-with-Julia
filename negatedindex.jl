@@ -22,8 +22,26 @@ function checkbounds(sz::Integer, r::NegatedIndex)
 end
 
 
-# Copies A, only for non-negated indices
-function getindex(A::Array,r::NegatedIndex)
+# Copies A{T,1}, only for non-negated indices
+function getindex{T}(A::Array{T,1}, r::NegatedIndex)
+    n = length(A)
+    m = length(r.idx)
+    checkbounds(n,r)
+    b = similar(A,n-m)
+    c = 1
+    for k = 1:n
+        if k in r
+            b[c] = A[k]
+            c += 1
+        end
+    end
+    return b
+end
+
+# Copies A{T,N}, only for non-negated indices
+# NEED TO FIX THIS TO OUTPUT MULTI-DIM RESULTS!!
+function getindex{T}(A::Array{T,N}, r::NegatedIndex)
+    row,col = arraysize(A)
     n = length(A)
     m = length(r.idx)
     checkbounds(n,r)
